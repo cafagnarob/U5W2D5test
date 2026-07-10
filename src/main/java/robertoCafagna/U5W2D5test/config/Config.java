@@ -18,7 +18,7 @@ public class Config {
         System.out.println(cloudName);
         Map<String, String> config = new HashMap<>();
         config.put("cloud_name", cloudName);
-        config.put("api_Key", apiKey);
+        config.put("api_key", apiKey);
         config.put("api_secret", secret);
 
         return new Cloudinary(config);

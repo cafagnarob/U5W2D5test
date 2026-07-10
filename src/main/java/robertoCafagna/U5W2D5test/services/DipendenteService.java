@@ -1,24 +1,33 @@
 package robertoCafagna.U5W2D5test.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import robertoCafagna.U5W2D5test.DTO.DipendenteDTO;
 import robertoCafagna.U5W2D5test.entities.Dipendente;
 import robertoCafagna.U5W2D5test.exceptions.BadRequestException;
 import robertoCafagna.U5W2D5test.exceptions.NotFoundException;
+import robertoCafagna.U5W2D5test.exceptions.ValidationException;
 import robertoCafagna.U5W2D5test.repositories.DipendenteRepository;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class DipendenteService {
     private final DipendenteRepository dipendenteRepository;
+    private final Cloudinary fileUploader;
 
-    public DipendenteService(DipendenteRepository dipendenteRepository) {
+    public DipendenteService(DipendenteRepository dipendenteRepository, Cloudinary fileUploader) {
         this.dipendenteRepository = dipendenteRepository;
+        this.fileUploader = fileUploader;
     }
 
 
@@ -83,6 +92,39 @@ public class DipendenteService {
     public void findAndDelete(Long dipendenteId) {
         Dipendente found = this.findById(dipendenteId);
         this.dipendenteRepository.delete(found);
+    }
+
+
+    public void updatePic(Long dipendentiId, MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new ValidationException("inserire un file");
+        }
+        if (file.getSize() >= 10 * 1024 * 1024) {
+            throw new ValidationException("file di dimensione troppo grande, inserire un file di massimo 10MB");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null ||
+                (!contentType.equals("image/jpeg") &&
+                        !contentType.equals("image/png") &&
+                        !contentType.equals("image/gif"))) {
+
+            throw new ValidationException("Formato file non supportato");
+        }
+
+        Dipendente found = this.findById(dipendentiId);
+
+        try {
+            Map res = fileUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String url = res.get("secure_url").toString();
+            System.out.println(url);
+
+            found.setAvatar(url);
+            dipendenteRepository.save(found);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

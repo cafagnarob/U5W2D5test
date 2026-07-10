@@ -43,12 +43,13 @@ public class PrenotazioneService {
             );
         }
 
-        if (prenotazioneRepository.existsByDipendenteIdAndDataPrenotazione(
+        if (prenotazioneRepository.existsByDipendenteIdAndViaggio_DataViaggio(
                 body.dipendenteId(),
-                body.dataPrenotazione()
+                vFromDB.getDataViaggio()
         )) {
             throw new BadRequestException(
-                    "Il dipendente" + dFromDB.getUsername() + " ha già una prenotazione per il " + body.dataPrenotazione()
+                    "Il dipendente " + dFromDB.getUsername() +
+                            " è già impegnato in un altro viaggio il " + vFromDB.getDataViaggio()
             );
         }
         Prenotazione newPrenotazione = new Prenotazione(body.note(), dFromDB, vFromDB);
@@ -84,19 +85,18 @@ public class PrenotazioneService {
                     "Non puoi modificare una prenotazione di un viaggio completato"
             );
         }
-
-        if (prenotazioneRepository
-                .existsByDipendenteIdAndDataPrenotazioneAndIdNot(
-                        body.dipendenteId(),
-                        body.dataPrenotazione(),
-                        prenotazioneId)) {
-
+        if (prenotazioneRepository.existsByDipendenteIdAndViaggio_DataViaggioAndIdNot(
+                body.dipendenteId(),
+                vFromDB.getDataViaggio(),
+                prenotazioneId
+        )) {
             throw new BadRequestException(
-                    "Il dipendente ha già una prenotazione per questa data"
+                    "Il dipendente " + dFromDB.getUsername() +
+                            " è già impegnato in un altro viaggio il " + vFromDB.getDataViaggio()
             );
         }
 
-        found.setDataPrenotazione(LocalDate.now());
+
         found.setNote(body.note());
         found.setDipendente(dFromDB);
         found.setViaggio(vFromDB);
@@ -108,7 +108,7 @@ public class PrenotazioneService {
 
     public void findByIdAndDelete(Long prenotazioneId) {
         Prenotazione found = this.findById(prenotazioneId);
-        
+
         if (found.getViaggio().getDataViaggio()
                 .isBefore(LocalDate.now())) {
 

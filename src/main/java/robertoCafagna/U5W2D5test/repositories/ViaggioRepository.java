@@ -12,4 +12,5 @@ public interface ViaggioRepository extends JpaRepository<Viaggio, Long> {
             String destinazione,
             LocalDate dataViaggio
     );
+
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import robertoCafagna.U5W2D5test.DTO.StatoViaggioDTO;
 import robertoCafagna.U5W2D5test.DTO.ViaggioDTO;
 import robertoCafagna.U5W2D5test.Enum.StatoViaggio;
 import robertoCafagna.U5W2D5test.entities.Viaggio;
@@ -14,6 +15,8 @@ import robertoCafagna.U5W2D5test.exceptions.NotFoundException;
 import robertoCafagna.U5W2D5test.repositories.ViaggioRepository;
 
 import java.time.LocalDate;
+
+import static robertoCafagna.U5W2D5test.Enum.StatoViaggio.COMPLETATO;
 
 @Service
 @Slf4j
@@ -64,17 +67,10 @@ public class ViaggioService {
 
     public Viaggio findByIdAndUpdate(Long viaggioId, ViaggioDTO body) {
         Viaggio found = this.findById(viaggioId);
-
-        if (found.getStatoViaggio().equals(StatoViaggio.COMPLETATO) &&
-                body.statoViaggio().equals("IN_PROGRAMMA")) {
-            throw new BadRequestException(
-                    "Un viaggio completato non può tornare in programma"
-            );
-        }
+        
 
         found.setDataViaggio(body.dataViaggio());
         found.setDestinazione(body.destinazione());
-        found.setStatoViaggio(StatoViaggio.valueOf(body.statoViaggio()));
 
         Viaggio update = this.viaggioRepository.save(found);
 
@@ -84,6 +80,19 @@ public class ViaggioService {
     public void findByIdAndDelete(Long viaggioId) {
         Viaggio found = this.findById(viaggioId);
         this.viaggioRepository.delete(found);
+    }
+
+    public Viaggio updateStato(Long viaggioId, StatoViaggioDTO body) {
+        Viaggio found = this.findById(viaggioId);
+        if (found.getStatoViaggio() == COMPLETATO &&
+                body.statoViaggio().equals("IN_PROGRAMMA")) {
+            throw new BadRequestException(
+                    "Non puoi riaprire un viaggio completato"
+            );
+        }
+        found.setStatoViaggio(StatoViaggio.valueOf(body.statoViaggio()));
+        Viaggio update = this.viaggioRepository.save(found);
+        return update;
     }
 
 }

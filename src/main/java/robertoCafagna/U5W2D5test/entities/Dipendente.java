@@ -32,11 +32,16 @@ public class Dipendente {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Setter
+    @Column
+    private String avatar;
+
     public Dipendente(String name, String surname,
                       String username, String email) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
+        this.avatar = "";
     }
 }
