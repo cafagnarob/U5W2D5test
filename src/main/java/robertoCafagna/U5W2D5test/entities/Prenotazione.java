@@ -18,6 +18,7 @@ public class Prenotazione {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Setter
     @Column(nullable = false)
     private LocalDate dataPrenotazione;
 
@@ -25,10 +26,12 @@ public class Prenotazione {
     @Column
     private String note;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "dipendente_id")
     private Dipendente dipendente;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "viaggio_id")
     private Viaggio viaggio;

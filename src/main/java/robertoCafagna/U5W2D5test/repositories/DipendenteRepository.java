@@ -6,4 +6,7 @@ import robertoCafagna.U5W2D5test.entities.Dipendente;
 
 @Repository
 public interface DipendenteRepository extends JpaRepository<Dipendente, Long> {
+    boolean existsByEmail(String email);
+
+    boolean existsByUsername(String username);
 }
