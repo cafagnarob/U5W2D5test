@@ -12,6 +12,7 @@ import robertoCafagna.U5W2D5test.Enum.StatoViaggio;
 import robertoCafagna.U5W2D5test.entities.Viaggio;
 import robertoCafagna.U5W2D5test.exceptions.BadRequestException;
 import robertoCafagna.U5W2D5test.exceptions.NotFoundException;
+import robertoCafagna.U5W2D5test.repositories.PrenotazioneRepository;
 import robertoCafagna.U5W2D5test.repositories.ViaggioRepository;
 
 import java.time.LocalDate;
@@ -22,9 +23,11 @@ import static robertoCafagna.U5W2D5test.Enum.StatoViaggio.COMPLETATO;
 @Slf4j
 public class ViaggioService {
     private final ViaggioRepository viaggioRepository;
+    private final PrenotazioneRepository prenotazioneRepository;
 
-    public ViaggioService(ViaggioRepository viaggioRepository) {
+    public ViaggioService(ViaggioRepository viaggioRepository, PrenotazioneRepository prenotazioneRepository) {
         this.viaggioRepository = viaggioRepository;
+        this.prenotazioneRepository = prenotazioneRepository;
     }
 
     public Viaggio save(ViaggioDTO body) {
@@ -67,7 +70,7 @@ public class ViaggioService {
 
     public Viaggio findByIdAndUpdate(Long viaggioId, ViaggioDTO body) {
         Viaggio found = this.findById(viaggioId);
-        
+
 
         found.setDataViaggio(body.dataViaggio());
         found.setDestinazione(body.destinazione());
@@ -79,6 +82,11 @@ public class ViaggioService {
 
     public void findByIdAndDelete(Long viaggioId) {
         Viaggio found = this.findById(viaggioId);
+        if (prenotazioneRepository.existsByViaggioId(viaggioId)) {
+            throw new BadRequestException(
+                    "Non puoi eliminare un viaggio con prenotazioni associate"
+            );
+        }
         this.viaggioRepository.delete(found);
     }
 

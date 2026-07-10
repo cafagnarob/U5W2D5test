@@ -23,7 +23,7 @@ public class DipendenteController {
         this.dipendenteService = dipendenteService;
     }
 
-    // 1. GET http://localhost:3001/dipendenti?page=2&size=10&orderBy=nome --> 200 OK    ARRAY DI DIPENDENTI
+    // 1. GET http://localhost:3001/dipendenti?page=1&size=3&orderBy=name --> 200 OK    ARRAY DI DIPENDENTI
     @GetMapping
     public Page<Dipendente> getUsers(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "5") int size,
@@ -31,7 +31,7 @@ public class DipendenteController {
         return this.dipendenteService.getAll(page, size, orderBy);
     }
 
-    // 2. POST http://locahost:3001/dipendenti (+req.body) --> 201 CREATED    ID DIPENDENTI APPENA CREATO
+    // 2. POST http://localhost:3001/dipendenti (+req.body) --> 201 CREATED    ID DIPENDENTI APPENA CREATO
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // 201
     public DipendenteResponseDTO saveDipendente(@Valid @RequestBody DipendenteDTO body, BindingResult validationResult) {

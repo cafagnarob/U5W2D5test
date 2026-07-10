@@ -17,4 +17,8 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Long
             LocalDate dataViaggio,
             Long id
     );
+
+    boolean existsByViaggioId(Long viaggioId);
+
+    boolean existsByDipendenteId(Long viaggioId);
 }

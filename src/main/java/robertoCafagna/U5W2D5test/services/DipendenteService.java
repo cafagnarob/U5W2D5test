@@ -15,6 +15,7 @@ import robertoCafagna.U5W2D5test.exceptions.BadRequestException;
 import robertoCafagna.U5W2D5test.exceptions.NotFoundException;
 import robertoCafagna.U5W2D5test.exceptions.ValidationException;
 import robertoCafagna.U5W2D5test.repositories.DipendenteRepository;
+import robertoCafagna.U5W2D5test.repositories.PrenotazioneRepository;
 
 import java.io.IOException;
 import java.util.Map;
@@ -24,10 +25,12 @@ import java.util.Map;
 public class DipendenteService {
     private final DipendenteRepository dipendenteRepository;
     private final Cloudinary fileUploader;
+    private final PrenotazioneRepository prenotazioneRepository;
 
-    public DipendenteService(DipendenteRepository dipendenteRepository, Cloudinary fileUploader) {
+    public DipendenteService(DipendenteRepository dipendenteRepository, Cloudinary fileUploader, PrenotazioneRepository prenotazioneRepository) {
         this.dipendenteRepository = dipendenteRepository;
         this.fileUploader = fileUploader;
+        this.prenotazioneRepository = prenotazioneRepository;
     }
 
 
@@ -91,6 +94,11 @@ public class DipendenteService {
 
     public void findAndDelete(Long dipendenteId) {
         Dipendente found = this.findById(dipendenteId);
+        if (prenotazioneRepository.existsByDipendenteId(dipendenteId)) {
+            throw new BadRequestException(
+                    "Non puoi eliminare un viaggio con prenotazioni associate"
+            );
+        }
         this.dipendenteRepository.delete(found);
     }
 

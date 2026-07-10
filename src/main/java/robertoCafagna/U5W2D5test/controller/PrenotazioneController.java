@@ -14,7 +14,7 @@ import robertoCafagna.U5W2D5test.services.PrenotazioneService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/prenotazione")
+@RequestMapping("/prenotazioni")
 public class PrenotazioneController {
     private final PrenotazioneService prenotazioneService;
 
