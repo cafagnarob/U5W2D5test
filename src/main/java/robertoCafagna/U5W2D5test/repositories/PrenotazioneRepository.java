@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import robertoCafagna.U5W2D5test.entities.Prenotazione;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Long> {
@@ -20,5 +21,7 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Long
 
     boolean existsByViaggioId(Long viaggioId);
 
-    boolean existsByDipendenteId(Long viaggioId);
+    boolean existsByDipendenteId(Long dipendenteId);
+
+    List<Prenotazione> getByDipendenteId(Long dipendenteId);
 }

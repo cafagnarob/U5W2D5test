@@ -18,6 +18,7 @@ import robertoCafagna.U5W2D5test.repositories.PrenotazioneRepository;
 import robertoCafagna.U5W2D5test.repositories.ViaggioRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -75,6 +76,7 @@ public class PrenotazioneService {
                 new NotFoundException(prenotazioneId));
     }
 
+
     public Prenotazione findByIdAndUpdate(Long prenotazioneId, PrenotazioneDTO body) {
         Prenotazione found = this.findById(prenotazioneId);
         Dipendente dFromDB = this.dipendenteService.findById(body.dipendenteId());
@@ -117,6 +119,15 @@ public class PrenotazioneService {
             );
         }
         this.prenotazioneRepository.delete(found);
+    }
+
+
+    public void findByDipIdAndDelete(Long dipendenteId) {
+        List<Prenotazione> found = this.prenotazioneRepository.getByDipendenteId(dipendenteId);
+        if (found.isEmpty()) {
+            throw new NotFoundException(dipendenteId);
+        }
+        found.forEach(this.prenotazioneRepository::delete);
     }
 
 }

@@ -96,7 +96,7 @@ public class DipendenteService {
         Dipendente found = this.findById(dipendenteId);
         if (prenotazioneRepository.existsByDipendenteId(dipendenteId)) {
             throw new BadRequestException(
-                    "Non puoi eliminare un viaggio con prenotazioni associate"
+                    "Non puoi eliminare un dipendente con prenotazioni associate"
             );
         }
         this.dipendenteRepository.delete(found);

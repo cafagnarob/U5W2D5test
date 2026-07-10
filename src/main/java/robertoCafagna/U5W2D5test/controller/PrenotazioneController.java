@@ -65,5 +65,12 @@ public class PrenotazioneController {
         this.prenotazioneService.findByIdAndDelete(prenotazioneId);
     }
 
+    //6. DELETE (per dipendente ID) http://localhost:3001/prenotazioni/dipendente/{dipendenteId} --> 204 NO CONTENT
+    @DeleteMapping("/dipendente/{dipendenteId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByDipidAndDelete(@PathVariable long dipendenteId) {
+        this.prenotazioneService.findByDipIdAndDelete(dipendenteId);
+    }
+
 
 }
