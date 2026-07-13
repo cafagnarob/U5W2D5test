@@ -36,4 +36,10 @@ public class ErrorHandler {
         ex.printStackTrace();
         return new ErrorDTO("ERRORE INTRENO AL SERVER", LocalDateTime.now());
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleUnauthorized(UnauthorizedException ex) {
+        return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
 }

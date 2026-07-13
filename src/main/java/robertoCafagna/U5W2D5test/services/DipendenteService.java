@@ -44,7 +44,8 @@ public class DipendenteService {
         Dipendente newDipendente = new Dipendente(body.name().trim(),
                 body.surname().trim(),
                 body.username().trim(),
-                body.email().trim().toLowerCase());
+                body.email().trim().toLowerCase(),
+                body.password().trim());
 
         Dipendente saved = this.dipendenteRepository.save(newDipendente);
 
@@ -133,6 +134,11 @@ public class DipendenteService {
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    public Dipendente findByEmail(String email) {
+        return this.dipendenteRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("L'utente con email " + email + " non è stato trovato!"));
     }
 
 

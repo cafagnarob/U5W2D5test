@@ -36,12 +36,17 @@ public class Dipendente {
     @Column
     private String avatar;
 
+    @Setter
+    @Column(nullable = false)
+    private String password;
+
     public Dipendente(String name, String surname,
-                      String username, String email) {
+                      String username, String email, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
         this.avatar = "";
+        this.password = password;
     }
 }
