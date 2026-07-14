@@ -33,4 +33,13 @@ public class JWTTools {
             throw new UnauthorizedException("problemi con il toker, tenta nuovamente l'accesso");
         }
     }
+
+    public Long extractIdFromToken(String token) {
+        return Long.parseLong(Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build().
+                parseSignedClaims(token).
+                getPayload().
+                getSubject());
+    }
 }
